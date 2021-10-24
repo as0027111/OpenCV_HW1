@@ -37,3 +37,8 @@ def trans2Vertical(array):
         array[i] = [-array[i,2], array[i,0], -array[i,1]] # wanted version
         # array[i] = [-array[i,1], array[i,2], -array[i,0]] # more beautiful 
     return array
+
+def Show_image(Window_name, width, height, img):
+    cv2.namedWindow(Window_name, cv2.WINDOW_NORMAL) 
+    cv2.resizeWindow(Window_name, width,height)
+    cv2.imshow(Window_name, img)

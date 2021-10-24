@@ -10,13 +10,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import cv2
-import os, glob
+import glob
 import numpy as np
 import time 
-from itertools import combinations
-from matplotlib import pyplot as plt
-from HW1_reference import word_str2ary, word_str2ary_vertical
-import Question4
+from lib import Question3, Question4, Question2
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -108,7 +106,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        
+        self.Q2 = Question2.Q2()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -164,7 +162,7 @@ class Ui_MainWindow(object):
             if ret == True:
                 self.objpoints.append(self.objp)
                 self.imgpoints.append(corners)
-                cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
+                cv2.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
                 cv2.drawChessboardCorners(img, (w,h), corners, ret) #畫方格
                 cv2.namedWindow(img_name,cv2.WINDOW_NORMAL) 
                 cv2.resizeWindow(img_name,720,540)
@@ -175,8 +173,7 @@ class Ui_MainWindow(object):
         cv2.destroyAllWindows()
 
     def B1_2(self, MainWindow):  #Find Intrinsic
-        img = cv2.imread('./Dataset_CvDl_Hw1/Q1_Image/1.bmp')
-        gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+        gray = cv2.imread('./Dataset_CvDl_Hw1/Q1_Image/1.bmp', 0)
         ret,self.mtx,self.dist,self.rvecs,self.tvecs = cv2.calibrateCamera(self.objpoints, self.imgpoints, gray.shape[::-1], None, None)
         print(self.mtx)
 
@@ -210,124 +207,27 @@ class Ui_MainWindow(object):
             cv2.destroyAllWindows()
 
     def B2_1(self, MainWindow): #Augmented Reality - On Board
-        word = self.lineEdit.text() # 要記得分割
-        objp = np.zeros((8*11,3), np.float32)
-        objp[:,:2] = np.mgrid[0:8,0:11].T.reshape(-1,2)
-        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-        ch = word_str2ary(word)
-        #axis =  np.float32([[2,3,0], [6,5,0], [6,1,0], [4,3,-3]]).reshape(-1,3) # 金字塔
-        images,rvecs_list,tvecs_list = list(), list(), list()
-        for img_name,rvecs,tvecs in zip(self.images,self.rvecs,self.tvecs):
-            if int(img_name.split('\\')[-1].split('.')[0]) < 6:
-                images.append(img_name)
-                rvecs_list.append(rvecs)
-                tvecs_list.append(tvecs)
-        for index, fname in enumerate(images):
-            img = cv2.imread(fname)
-            gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-            ret, corners = cv2.findChessboardCorners(gray, (8,11),None)
-            #print(rvecs[index],tvecs[index])
-            if ret == True:
-                corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
-                imgpts, jac = cv2.projectPoints(ch,rvecs_list[index],tvecs_list[index],self.mtx,self.dist)
-                img = self.draw(img,corners2,imgpts)
-                cv2.namedWindow(fname,cv2.WINDOW_NORMAL) 
-                cv2.resizeWindow(fname,720,540)
-                cv2.imshow(fname,img)
-                cv2.waitKey(1)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        word = self.lineEdit.text() 
+        
+        self.Q2.Q2_1(word)
 
     def B2_2(self, MainWindow): #Augmented Reality - Vertically
-        word = self.lineEdit.text() # 要記得分割
-        objp = np.zeros((8*11,3), np.float32)
-        objp[:,:2] = np.mgrid[0:8,0:11].T.reshape(-1,2)
-        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-        ch = word_str2ary_vertical(word)
-        #axis =  np.float32([[2,3,0], [6,5,0], [6,1,0], [4,3,-3]]).reshape(-1,3) # 金字塔
-        images,rvecs_list,tvecs_list = list(), list(), list()
-        for img_name,rvecs,tvecs in zip(self.images,self.rvecs,self.tvecs):
-            if int(img_name.split('\\')[-1].split('.')[0]) < 6:
-                images.append(img_name)
-                rvecs_list.append(rvecs)
-                tvecs_list.append(tvecs)
-        for index, fname in enumerate(images):
-            img = cv2.imread(fname)
-            gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-            ret, corners = cv2.findChessboardCorners(gray, (8,11),None)
-            #print(rvecs[index],tvecs[index])
-            if ret == True:
-                corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
-                imgpts, jac = cv2.projectPoints(ch,rvecs_list[index],tvecs_list[index],self.mtx,self.dist)
-                img = self.draw(img,corners2,imgpts)
-                cv2.namedWindow(fname,cv2.WINDOW_NORMAL) 
-                cv2.resizeWindow(fname,720,540)
-                cv2.imshow(fname,img)
-                cv2.waitKey(1)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-    def draw(self, img, corners, imgpts):
-        imgpts = np.int32(imgpts).reshape(-1,2)
-        #imgpts = np.array(list(combinations(imgpts,2)))
-        for i in range(1, len(imgpts), 2): # 因為有多加一個 [0,0,0]
-            img = cv2.line(img, tuple(imgpts[i]), tuple(imgpts[i+1]),(0,0,255),10)
-        return img
-
-
+        word = self.lineEdit.text() 
+        self.Q2.Q2_2(word)
 
     def B3_1(self, MainWindow):
-        self.L = cv2.imread('./Dataset_CvDL_Hw1/Q3_Image/imL.png') # 用來顯示圖片
-        self.R = cv2.imread('./Dataset_CvDL_Hw1/Q3_Image/imR.png')
-        imgL = cv2.imread('./Dataset_CvDL_Hw1/Q3_Image/imL.png', 0) # 用來做 disparity
-        imgR = cv2.imread('./Dataset_CvDL_Hw1/Q3_Image/imR.png', 0)
+        Q3 = Question3.Q3()
+        Q3.Q3_1()
 
-        #Block Size: Must be odd and within the range [5, 255]
-        #Disparity range: Must be positive and divisible by 16
-        stereo = cv2.StereoBM_create(numDisparities=256, blockSize=25)
-        
-        print("1")
-        self.disparity = stereo.compute(imgL,imgR)
-        min = self.disparity.min()
-        max = self.disparity.max()
-        print(min, max)
-        print(self.R.shape)
-        disparity_SGBM = cv2.normalize(self.disparity, self.disparity, alpha=255,
-                              beta=0, norm_type=cv2.NORM_MINMAX)
-        self.disparity_SGBM = np.uint8(disparity_SGBM)
-
-        cv2.namedWindow("L",cv2.WINDOW_NORMAL) 
-        cv2.resizeWindow("L", 720,540)
-        cv2.imshow('L', self.L)
-        cv2.setMouseCallback('L', self.draw_circle) # 綁定點擊的事件
-
-        cv2.namedWindow("R",cv2.WINDOW_NORMAL) 
-        cv2.resizeWindow("R", 720,540)
-        cv2.imshow('R', self.R)
-
-        cv2.namedWindow("Disparity",cv2.WINDOW_NORMAL) 
-        cv2.resizeWindow("Disparity", 720,540)
-        cv2.imshow("Disparity", self.disparity_SGBM)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-    def draw_circle(self, event, x, y, flags, param):
-        if event == cv2.EVENT_LBUTTONDBLCLK:
-            print("Dis", self.disparity[y,x])
-            dis = self.disparity[y,x]
-            
-            img = self.L.copy()
-            cv2.circle(img, (x, y), 10, (0, 0, 255), -1)
-            cv2.imshow('L', img)       
-            img =self.R.copy()     
-            cv2.circle(img, (x - dis, y), 10, (0, 0, 255), -1)
-            cv2.imshow('R', img)
-            #print(x,y)
     def B4_1(self, MainWindow):
-        self.Q4 = Question4.Q4()
+        img_path_1 = './Dataset_CvDl_Hw1./Q4_Image./Shark1.jpg'
+        img_path_2 = './Dataset_CvDl_Hw1./Q4_Image./Shark2.jpg'
+        self.Q4 = Question4.Q4(img_path_1, img_path_2)
         self.Q4.Q4_1()
+
     def B4_2(self, MainWindow):
         self.Q4.Q4_2()
+
     def B4_3(self, MainWindow):
         self.Q4.Q4_3()
 
