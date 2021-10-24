@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
-from HW1_reference import Show_image
+from lib.utilize import Show_image
+
 class Q4:
     def __init__(self, img1, img2):
         self.img1 = cv2.imread(img1,0) 
@@ -76,7 +77,10 @@ class Q4:
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":  
-    Q4 = Q4()
+    img_path_1 = './Dataset_CvDl_Hw1./Q4_Image./Shark1.jpg'
+    img_path_2 = './Dataset_CvDl_Hw1./Q4_Image./Shark2.jpg'
+
+    Q4 = Q4(img_path_1, img_path_2)
     Q4.Q4_1()
     Q4.Q4_2()
     Q4.Q4_3()
