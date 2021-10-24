@@ -16,7 +16,7 @@ import time
 from itertools import combinations
 from matplotlib import pyplot as plt
 from HW1_reference import word_str2ary, word_str2ary_vertical
-
+import Question4
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -108,6 +108,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -135,8 +137,12 @@ class Ui_MainWindow(object):
 
         self.groupBox_4.setTitle(_translate("MainWindow", "4. SIFT"))
         self.pushButton_9.setText(_translate("MainWindow", "4.1 Keypoints"))
-        self.pushButton_11.setText(_translate("MainWindow", "4.3 Wrap Image"))
+        self.pushButton_9.clicked.connect(self.B4_1)
         self.pushButton_10.setText(_translate("MainWindow", "4.2 Matched Keypoints"))
+        self.pushButton_10.clicked.connect(self.B4_2)        
+        self.pushButton_11.setText(_translate("MainWindow", "4.3 Wrap Image"))
+        self.pushButton_11.clicked.connect(self.B4_3)
+
 
     def B1_1(self, MainWindow): #Find Corners
         w, h = 8, 11
@@ -275,7 +281,6 @@ class Ui_MainWindow(object):
         self.R = cv2.imread('./Dataset_CvDL_Hw1/Q3_Image/imR.png')
         imgL = cv2.imread('./Dataset_CvDL_Hw1/Q3_Image/imL.png', 0) # 用來做 disparity
         imgR = cv2.imread('./Dataset_CvDL_Hw1/Q3_Image/imR.png', 0)
-        print(imgL)
 
         #Block Size: Must be odd and within the range [5, 255]
         #Disparity range: Must be positive and divisible by 16
@@ -286,8 +291,6 @@ class Ui_MainWindow(object):
         min = self.disparity.min()
         max = self.disparity.max()
         print(min, max)
-        print(self.disparity.shape)
-        print(self.L.shape)
         print(self.R.shape)
         disparity_SGBM = cv2.normalize(self.disparity, self.disparity, alpha=255,
                               beta=0, norm_type=cv2.NORM_MINMAX)
@@ -320,8 +323,13 @@ class Ui_MainWindow(object):
             cv2.circle(img, (x - dis, y), 10, (0, 0, 255), -1)
             cv2.imshow('R', img)
             #print(x,y)
-            
-
+    def B4_1(self, MainWindow):
+        self.Q4 = Question4.Q4()
+        self.Q4.Q4_1()
+    def B4_2(self, MainWindow):
+        self.Q4.Q4_2()
+    def B4_3(self, MainWindow):
+        self.Q4.Q4_3()
 
         
 
