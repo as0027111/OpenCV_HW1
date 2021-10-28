@@ -44,6 +44,7 @@ class Q2():
 
     def Q2_2(self, word='OPENCV'): #Augmented Reality - Vertically
         ch = word_str2ary_vertical(word)
+        # print(ch)
         for index, fname in enumerate(self.images):
             img = cv2.imread(fname)
             gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -76,6 +77,7 @@ def word_str2ary(words):
         # print(i, word)
         ch = font_dict.getNode(word).mat()
         test = np.float32(ch).reshape(-1, 3)
+        # print(test)
         test = matr_list[i] + transform(test)
         return_list = np.row_stack((return_list, test))
     return return_list

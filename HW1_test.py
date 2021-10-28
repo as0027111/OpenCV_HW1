@@ -195,9 +195,6 @@ class Ui_MainWindow(object):
             h,  w = img1.shape[:2]
             newcameramtx, roi=cv2.getOptimalNewCameraMatrix(self.mtx,self.dist,(w,h),0,(w,h)) 
             dst = cv2.undistort(img1, self.mtx, self.dist, None, newcameramtx)
-            # 根據前面ROI區域裁剪圖片
-            #x,y,w,h = roi
-            #dst = dst[y:y+h, x:x+w]
             show_2pic_stack = np.concatenate((img1, dst), axis=1)
             cv2.namedWindow("distortion",cv2.WINDOW_NORMAL) 
             cv2.resizeWindow("distortion",720*2,540)
