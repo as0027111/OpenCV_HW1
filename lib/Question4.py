@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from lib.Question5 import Q5
 from lib.utilize import Show_image
 
 class Q4:
@@ -75,6 +76,7 @@ class Q4:
         Show_image("Result", 720*2, 540, direct)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+    
 
 if __name__ == "__main__":  
     img_path_1 = './Dataset_CvDl_Hw1./Q4_Image./Shark1.jpg'
