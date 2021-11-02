@@ -149,7 +149,6 @@ class Ui_MainWindow(object):
 
         self.objpoints = [] # 在世界座標系中的三維座標
         self.imgpoints = [] # 在圖像平面的二維座標    
-        
         self.images = sorted(glob.glob('.\Dataset_CvDl_Hw1\Q1_Image\*.bmp'))
         print(self.images)
         w, h = 8, 11 
@@ -164,22 +163,23 @@ class Ui_MainWindow(object):
                 self.imgpoints.append(corners)
                 cv2.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
                 cv2.drawChessboardCorners(img, (w,h), corners, ret) #畫方格
-                cv2.namedWindow(img_name,cv2.WINDOW_NORMAL) 
-                cv2.resizeWindow(img_name,720,540)
-                cv2.imshow(img_name,img)
-                cv2.waitKey(1)
+                cv2.namedWindow("img_name",cv2.WINDOW_NORMAL) 
+                cv2.resizeWindow("img_name",720,540)
+                cv2.imshow("img_name",img)
+                cv2.waitKey(500)
                 # time.sleep(0.5)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
     def B1_2(self, MainWindow):  #Find Intrinsic
         gray = cv2.imread('./Dataset_CvDl_Hw1/Q1_Image/1.bmp', 0)
+        print(gray.shape[::-1])
         ret,self.mtx,self.dist,self.rvecs,self.tvecs = cv2.calibrateCamera(self.objpoints, self.imgpoints, gray.shape[::-1], None, None)
         print(self.mtx)
 
     def B1_3(self, MainWindow):  #Find Extrinsic
         order_list = [0,7,8,9,10,11,12,13,14,1,2,3,4,5,6]
-        num = int(self.comboBox.currentText())-1
+        num = int(self.comboBox.currentText()) - 1
         num = order_list[num]
         #print(num)
         rotational_matrix, _ = cv2.Rodrigues(self.rvecs[num]) 
@@ -201,7 +201,7 @@ class Ui_MainWindow(object):
             cv2.imshow("distortion",show_2pic_stack)
             cv2.waitKey(1)
             time.sleep(0.5)
-            cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
     def B2_1(self, MainWindow): #Augmented Reality - On Board
         word = self.lineEdit.text() 

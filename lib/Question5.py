@@ -1,15 +1,9 @@
 import tensorflow as tf
 import keras
-import os 
-import random
 import numpy as np
 import keras
-import tensorflow as tf
 import pickle
-from PIL import Image
 from matplotlib import pyplot as plt
-from tensorflow.keras import optimizers
-import cv2
 
 
 class Q5():
@@ -83,6 +77,7 @@ class Q5():
         x = self.x_test[selected_num]
         target = np.expand_dims(x, axis=0) # 必須轉成 batch 的樣子: (1, 32, 32, 3)
         prediction_class = np.argmax(self.model.predict(target), axis=-1) # 找預測中機率的最大值
+        print(self.y_test_show[selected_num])
         plt.figure("Prediction", figsize=(10,5))  
         # 畫圖 + 顯示預測的種類
         plt.subplot(1, 2, 1)

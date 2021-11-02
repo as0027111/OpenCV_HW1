@@ -15,8 +15,8 @@ class Q4:
         keypoint_1 = self.sift.detect(self.img1)
         srt_1 = sorted(keypoint_1, key = lambda x:x.size, reverse=True)
         self.srt200_1 = srt_1[:200]
-        img_1 = cv2.drawKeypoints(self.img1,keypoint_1,np.array([]),color=(0, 255, 0), flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-        img_1 = cv2.drawKeypoints(img_1,self.srt200_1,np.array([]),color=(0, 0, 255))
+        # img_1 = cv2.drawKeypoints(self.img1,keypoint_1,np.array([]),color=(0, 255, 0), flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        img_1 = cv2.drawKeypoints(self.img1,self.srt200_1,np.array([]),color=(0, 0, 255))
 
         keypoint_2 = self.sift.detect(self.img2)
         srt_2 = sorted(keypoint_2, key = lambda x:x.size, reverse=True)
@@ -37,7 +37,7 @@ class Q4:
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
         search_params = dict(checks=50)   # or pass empty dictionary
         self.flann = cv2.FlannBasedMatcher(index_params,search_params)
-        matches = self.flann.knnMatch(des1, des2, k=2)
+        matches = self.flann.knnMatch(des2, des1, k=2)
     
         # ratio test as per Lowe's paper
         # https://stackoverflow.com/questions/46607647/sift-feature-matching-point-coordinates
@@ -50,7 +50,7 @@ class Q4:
                         matchesMask = matchesMask,
                         flags = 0)
 
-        img3 = cv2.drawMatchesKnn(self.img1, self.kpts_1, self.img2, self.kpts_2, matches, None, **draw_params)
+        img3 = cv2.drawMatchesKnn(self.img2, self.kpts_2,self.img1, self.kpts_1,  matches, None, **draw_params)
         Show_image("Matching", 720*2, 540, img3)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
